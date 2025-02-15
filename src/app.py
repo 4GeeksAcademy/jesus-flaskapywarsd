@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User,Characters,Planets
 #from models import Person
 
 app = Flask(__name__)
@@ -35,17 +35,74 @@ def handle_invalid_usage(error):
 @app.route('/')
 def sitemap():
     return generate_sitemap(app)
+# ruta usuarios
 
 @app.route('/user', methods=['GET'])
-def handle_hello():
+def get_all_users():
+    
+    data = db.session.scalars(db.select(User)).all()
+    result = list(map(lambda item: item.serialize(),data))
+
+    if result == []:
+        return jsonify({"msg":"user does not exists"}), 404
 
     response_body = {
-        "msg": "Hello, this is your GET /user response "
+       "results": result  
     }
 
     return jsonify(response_body), 200
 
+# ruta characters
+@app.route('/characters', methods=['GET'])
+def get_all_characters():
+    
+    data = db.session.scalars(db.select(Characters)).all()
+    result = list(map(lambda item: item.serialize(),data))
 
+    if result == []:
+        return jsonify({"msg":"user does not exists"}), 404
+
+    response_body = {
+        "results": result
+    }
+
+    return jsonify(response_body), 200
+
+# ruta characters unico
+@app.route('/characters/<int:id>', methods=['GET'])
+def get_one_characters(id):
+    try:
+        characters = db.session.execute(db.select(Characters).filter_by(id=id)).scalar_one()
+    
+        return jsonify({"result":characters.serialize()}), 200
+    except:
+        return jsonify({"msg":"user do not exist"}), 404
+
+# ruta planetas
+@app.route('/planets', methods=['GET'])
+def get_all_planets():
+    
+    data = db.session.scalars(db.select(Planets)).all()
+    result = list(map(lambda item: item.serialize(),data))
+
+    if result == []:
+        return jsonify({"msg":"user does not exists"}), 404
+
+    response_body = {
+       "results": result  
+    }
+
+    return jsonify(response_body), 200
+
+# ruta planeta unico
+@app.route('/planets/<int:id>', methods=['GET'])
+def get_one_planets(id):
+    try:
+        planets = db.session.execute(db.select(Planets).filter_by(id=id)).scalar_one()
+    
+        return jsonify({"result":planets.serialize()}), 200
+    except:
+        return jsonify({"msg":"user do not exist"}), 404
 
 
 # this only runs if `$ python src/app.py` is executed
