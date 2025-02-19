@@ -75,9 +75,11 @@ class Favorite_planets(db.Model):
     __tablename__ = 'favorite_planets'
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    planets_id: Mapped[int] = mapped_column(ForeignKey('planets.id'))
+    planets_id: Mapped[int] = mapped_column(ForeignKey("planets.id"))
 
     def serialize(self):
+        planets= db.session.execute(db.select(Planets).filter.by(id=self.planets_id)).scalar.one()
         return {
-            "id": self.id
+            "id": self.id,
+            "planets" : planets.serialize()
         }
