@@ -99,9 +99,9 @@ def get_all_planets():
     if result == []:
         return jsonify({"msg":"user does not exists"}), 404
 
-    response_body = {
-       "results": result  
-    }
+    # response_body = {
+    #    "results": result  
+    # }
 
     return jsonify(response_body), 200
 
