@@ -99,9 +99,9 @@ def get_all_planets():
     if result == []:
         return jsonify({"msg":"user does not exists"}), 404
 
-    # response_body = {
-    #    "results": result  
-    # }
+    response_body = {
+       "results": result  
+    }
 
     return jsonify(response_body), 200
 
@@ -130,14 +130,13 @@ def create_user():
         return jsonify({"msg":"created"}), 201
 
 #post planets/favs.
-# 
 
 @app.route('/favsplanets/<int:id>', methods=['POST'])
 def post_fav_planet(id):
     body_data = request.json
     # print(body_data)
     # print(body_data["planet_id"])
-     print(id)
+
     try:
         favs_planets = db.session.execute(db.select(Favorite_planets).filter_by(users_id=body_data["user_id"]).filter_by(planets_id=body_data["planet_id"])).scalar_one()
         return jsonify({"result":"ok"}), 400
