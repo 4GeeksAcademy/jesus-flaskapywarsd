@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User,Characters,Planets,Favorite_planets
+from models import db, User,Characters,Planets,Favorite_planets,Favorite_characters
 #from models import Person
 
 app = Flask(__name__)
@@ -150,6 +150,41 @@ def post_fav_planet(id):
         }
         return jsonify(response_body), 200
 
+@app.route('/favscharacters/<int:id>', methods=['DELETE'])
+def delete_fav_people(id):
+    #print(id)
+    try:
+        user_query = db.session.execute(db.select(Favorite_characters).filter_by(id=id)).scalar_one()
+        #print(user_query.serialize())
+        db.session.delete(user_query)
+        db.session.commit()
+        return jsonify({"msg":"People fav delete"}), 200
+    except:
+        return jsonify({"msg":"user not exist"}), 404
+    
+@app.route('/favsplanets/<int:id>', methods=['DELETE'])
+def delete_fav_planets(id):
+    #print(id)
+    try:
+        user_query = db.session.execute(db.select(Favorite_planets).filter_by(id=id)).scalar_one()
+        #print(user_query.serialize())
+        db.session.delete(user_query)
+        db.session.commit()
+        return jsonify({"msg":"Planets fav delete"}), 200
+    except:
+        return jsonify({"msg":"user not exist"}), 404
+    
+@app.route('/favscharacters/<int:id>', methods=['DELETE'])
+def delete_fav_characters(id):
+    #print(id)
+    try:
+        user_query = db.session.execute(db.select(Favorite_characters).filter_by(id=id)).scalar_one()
+        #print(user_query.serialize())
+        db.session.delete(user_query)
+        db.session.commit()
+        return jsonify({"msg":"People fav delete"}), 200
+    except:
+        return jsonify({"msg":"user not exist"}), 404
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
